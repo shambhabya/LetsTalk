@@ -67,20 +67,25 @@ const Chat = ({ currentUserId, otherUserId }) => {
         console.error(error);
       });
 
-    onValue(ref(database, `chats/${chatId}/messages`), (snapshot) => {
-      const data = snapshot.val();
-      const messagesArray = data
-        ? Object.entries(data).map(([key, value]) => ({ ...value, id: key }))
-        : [];
-      setMessages(messagesArray);
-      update(ref(database, `chats/${chatId}/`), { lastSeen: "read" });
-    });
+    const unsubscribe = onValue(
+      ref(database, `chats/${chatId}/messages`),
+      (snapshot) => {
+        const data = snapshot.val();
+        const messagesArray = data
+          ? Object.entries(data).map(([key, value]) => ({ ...value, id: key }))
+          : [];
+
+        setMessages(messagesArray);
+        update(ref(database, `chats/${chatId}/`), { lastSeen: "read" });
+      }
+    );
 
     onValue(ref(database, `chats/${chatId}/`), (snapshot) => {
       const data = snapshot.val();
       data.lastSeen && setLastSeen(data.lastSeen);
       console.log(data, lastSeen);
     });
+    return () => unsubscribe();
   }, [currentUserId, otherUserId]);
 
   const handleSendMessage = () => {
@@ -108,6 +113,7 @@ const Chat = ({ currentUserId, otherUserId }) => {
   useEffect(() => {
     endRef.current?.scrollIntoView({ behaviour: "smooth" });
   }, [messages]);
+
   return (
     <div className="   border-r border-[#dddddd35] flex h-full flex-col">
       {/* top */}
@@ -129,13 +135,12 @@ const Chat = ({ currentUserId, otherUserId }) => {
               message.sender === currentUserId ? "self-end" : "self-start"
             }`}
           >
-            <div>
+            <div className="">
               {message.sender === currentUserId ? (
                 <span>{mainUser && mainUser.username}</span>
               ) : (
                 <span>{otherUser && otherUser.username}</span>
-              )}{" "}
-              de
+              )}
             </div>
             <div className="texts flex-1 flex flex-col gap-2">
               <p className="p-3 bg-white rounded-lg">{message.content}</p>

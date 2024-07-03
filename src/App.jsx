@@ -13,6 +13,7 @@ function App() {
 
   useEffect(() => {
     currentUser ? setCurrentUserId(currentUser.uid) : setCurrentUserId(null);
+    console.log("current user-", currentUser);
   }, [currentUserId]);
   return (
     <div className=" h-screen flex flex-col gap-8 items-center bg-[black] p-6">
