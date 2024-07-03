@@ -8,29 +8,31 @@ import { useAuth } from "./context/AuthContext";
 
 function App() {
   const currentUser = useAuth();
-  const [currentUserId, setCurrentUserId] = useState("user1");
+  const [currentUserId, setCurrentUserId] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [otherUsersId, setOtherUsersId] = useState(null);
 
   useEffect(() => {
     currentUser ? setCurrentUserId(currentUser.uid) : setCurrentUserId(null);
-
-    console.log("crr-", currentUserId);
-  }, [currentUser]);
+  }, [currentUserId]);
   return (
-    <div className=" h-screen flex justify-center items-center bg-black">
-      <div className="w-4/5 h-[90vh] bg-[rgba(87,126,197,0.75)]   rounded-[12px] border border-[rgba(255,255,255,0.125)] flex">
+    <div className=" h-screen flex flex-col gap-8 items-center bg-[black] p-6">
+      <div className="text-white text-4xl font-extrabold ">MyChat App</div>
+      <div className="w-4/5 h-[80vh] bg-[rgba(108,130,217,0.75)] backdrop-blur-2xl saturate-100    rounded-[12px] border border-[rgba(255,255,255,0.125)] flex">
         {currentUser ? (
           <>
             <List
               currentUserId={currentUserId}
               onSelectUser={setSelectedUserId}
             />
-            {selectedUserId && (
-              <Chat
-                currentUserId={currentUserId}
-                otherUserId={selectedUserId}
-              />
-            )}
+            <div className="flex-[2]">
+              {selectedUserId && (
+                <Chat
+                  currentUserId={currentUserId}
+                  otherUserId={selectedUserId}
+                />
+              )}
+            </div>
           </>
         ) : (
           <Login />
@@ -42,3 +44,5 @@ function App() {
 }
 
 export default App;
+
+// url('../public/bg.jpg')

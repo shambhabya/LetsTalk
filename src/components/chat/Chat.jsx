@@ -1,5 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { database, onValue, push, ref, set } from "../../lib/firebase";
+import {
+  child,
+  database,
+  get,
+  onValue,
+  push,
+  ref,
+  set,
+  update,
+} from "../../lib/firebase";
 
 const formatTimestamp = (timestamp) => {
   const date = new Date(timestamp);
@@ -26,32 +35,49 @@ const formatTimestamp = (timestamp) => {
 
 const Chat = ({ currentUserId, otherUserId }) => {
   const [messages, setMessages] = useState([]);
+  const [lastSeen, setLastSeen] = useState("");
   const [newMessage, setNewMessage] = useState("");
+  const [mainUser, setMainUser] = useState(null);
+  const [otherUser, setOtherUser] = useState(null);
+
+  const chatId = [currentUserId, otherUserId].sort().join("_");
 
   useEffect(() => {
-    const chatId = [currentUserId, otherUserId].sort().join("_");
+    get(child(ref(database), `users/${currentUserId}`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          setMainUser(snapshot.val());
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    get(child(ref(database), `users/${otherUserId}`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          setOtherUser(snapshot.val());
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 
     onValue(ref(database, `chats/${chatId}/messages`), (snapshot) => {
       const data = snapshot.val();
       const messagesArray = data
         ? Object.entries(data).map(([key, value]) => ({ ...value, id: key }))
         : [];
-      console.log(messagesArray);
       setMessages(messagesArray);
+      update(ref(database, `chats/${chatId}/`), { lastSeen: "read" });
+    });
 
-      // if (currentUserId !== messagesArray[messagesArray.length - 1]?.sender) {
-      //   messagesArray.forEach((message) => {
-      //     if (message.status === "sent") {
-      //       database
-      //         .ref(`chats/${chatId}/messages/${message.id}`)
-      //         .update({ status: "delivered" });
-      //     } else if (message.status === "delivered") {
-      //       database
-      //         .ref(`chats/${chatId}/messages/${message.id}`)
-      //         .update({ status: "read" });
-      //     }
-      //   });
-      // }
+    onValue(ref(database, `chats/${chatId}/`), (snapshot) => {
+      const data = snapshot.val();
+      data.lastSeen && setLastSeen(data.lastSeen);
     });
   }, [currentUserId, otherUserId]);
 
@@ -63,11 +89,13 @@ const Chat = ({ currentUserId, otherUserId }) => {
         sender: currentUserId,
         content: newMessage,
         timestamp: Date.now(),
-        status: "sent",
       };
 
       // set(ref(database, `chats/${chatId}/messages`), message);
-      push(ref(database, `chats/${chatId}/messages`), message);
+      push(ref(database, `chats/${chatId}/messages`), message).then(() => {
+        set(ref(database, `chats/${chatId}/lastSeen`), "sent");
+      });
+
       setNewMessage("");
     }
   };
@@ -76,24 +104,16 @@ const Chat = ({ currentUserId, otherUserId }) => {
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behaviour: "smooth" });
-  }, []);
+  }, [messages]);
   return (
-    <div className=" flex-[2]  border-r border-[#dddddd35] flex h-full flex-col">
+    <div className="   border-r border-[#dddddd35] flex h-full flex-col">
       {/* top */}
 
       <div className="top p-4 flex justify-center items-center border-b border-[#dddddd35]">
         <div className="user flex items-center gap-5">
-          <img
-            src="/public/avatar.png"
-            alt="avatar"
-            className=" w-14 h-14 rounded-md"
-          />
-          <div className="texts">
-            <span className=" text-base font-bold">Jane Doe</span>
-            <p className=" text-sm font-light text-slate-500">
-              Loren Ipsum dolor, sit amet.
-            </p>
-          </div>
+          <span className=" text-2xl font-bold text-white">
+            Chat with {otherUser && otherUser.username}
+          </span>
         </div>
       </div>
 
@@ -106,13 +126,27 @@ const Chat = ({ currentUserId, otherUserId }) => {
               message.sender === currentUserId ? "self-end" : "self-start"
             }`}
           >
+            <div>
+              {message.sender === currentUserId ? (
+                <span>{mainUser && mainUser.username}</span>
+              ) : (
+                <span>{otherUser && otherUser.username}</span>
+              )}
+            </div>
             <div className="texts flex-1 flex flex-col gap-2">
               <p className="p-3 bg-white rounded-lg">{message.content}</p>
               <span>{formatTimestamp(message.timestamp)}</span>
             </div>
           </div>
         ))}
-
+        {messages.length > 0 &&
+          messages[messages.length - 1].sender === currentUserId && (
+            <span className=" flex justify-end">
+              {lastSeen === "sent" && <span>✓</span>}
+              {lastSeen === "delivered" && <span className="">✓✓</span>}
+              {lastSeen === "read" && <span className="text-blue-400">✓✓</span>}
+            </span>
+          )}
         <div ref={endRef}></div>
       </div>
 

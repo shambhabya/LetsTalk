@@ -1,11 +1,20 @@
 import { signOut } from "firebase/auth";
-import { database, firebaseAuth, onValue, ref } from "../../lib/firebase";
+import {
+  database,
+  firebaseAuth,
+  onValue,
+  ref,
+  update,
+} from "../../lib/firebase";
 import { useEffect, useState } from "react";
 
 const List = ({ currentUserId, onSelectUser }) => {
   const [users, setUsers] = useState([]);
 
   const handleLogout = () => {
+    update(ref(database, "users/" + currentUserId), {
+      online: false,
+    });
     signOut(firebaseAuth).then(() => {
       console.log("SignOut successful");
     });
@@ -16,41 +25,46 @@ const List = ({ currentUserId, onSelectUser }) => {
 
     onValue(usersRef, (snapshot) => {
       const data = snapshot.val();
-      console.log(data);
       const usersArray = data
         ? Object.keys(data)
             .filter((id) => id !== currentUserId)
             .map((id) => ({ id, ...data[id] }))
         : [];
       setUsers(usersArray);
-      console.log(usersArray);
     });
   }, [currentUserId]);
 
   return (
-    <div className="border-r border-[#dddddd35] ">
-      <div>UserList</div>
+    <div className="border-r border-[#dddddd35] flex-1 flex flex-col">
+      <div className="flex items-center justify-center p-2 border-b border-[#dddddd35] text-2xl font-bold text-white">
+        Users
+      </div>
+
       <div className="flex-1 overflow-scroll">
-        <div className="flex flex-col items-center ">
-          <div>
-            <div className="flex gap-2">
-              <img src="/public/search.png" alt="search" />
-              <input type="text" placeholder="Search" />
-            </div>
-          </div>
+        <div className="flex flex-col items-center">
           {users.map((user) => (
             <div
-              className="item flex gap-2 p-2"
+              className="item flex gap-4 p-2 w-full justify-center items-center border border-[#dddddd35] cursor-pointer"
               key={user.id}
               onClick={() => onSelectUser(user.id)}
             >
-              <span>{user.name}</span>
-              <p>{user.online ? "Online" : "Offline"}</p>
+              <span className="font-medium text-lg">{user.username}</span>
+              <div
+                className={`h-3 w-3 rounded-full ${
+                  user.online ? "bg-green-500" : "bg-gray-400"
+                }`}
+              ></div>
             </div>
           ))}
         </div>
       </div>
-      <div onClick={handleLogout}>LogOut</div>
+
+      <div
+        onClick={handleLogout}
+        className="p-2 text-center border-t border-[#dddddd35] cursor-pointer bg-red-300 text-2xl font-bold rounded-bl-lg"
+      >
+        Logout
+      </div>
     </div>
   );
 };
