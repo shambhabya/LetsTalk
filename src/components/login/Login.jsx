@@ -56,61 +56,61 @@ const Login = () => {
       });
   };
   return (
-    <div className="login w-full h-full flex items-center gap-24">
+    <div className="login w-full h-full md:flex items-center gap-24">
       <div className="item flex-1 flex flex-col items-center gap-5">
-        <div className="text-xl ">Welcome Back</div>
+        <div className="text-xl mt-3 md:mt-0">Welcome Back</div>
         <form
           onSubmit={handleLogin}
-          className="flex flex-col items-center justify-center gap-5"
+          className="flex flex-col items-center justify-center gap-2 md:gap-5"
         >
           <input
             type="text"
             placeholder="Email"
             name="email"
-            className="p-5 bg-black text-white rounded-md"
+            className="p-2 md:p-5 bg-black text-white rounded-md"
           />
           <input
             type="password"
             placeholder="Password"
             name="password"
-            className="p-5 bg-black text-white rounded-md"
+            className="p-2 md:p-5 bg-black text-white rounded-md"
           />
           <button
-            className="w-full p-3 bg-blue-400 text-white rounded-md cursor-pointer font-medium"
+            className="w-full p-1 md:p-3 bg-blue-400 text-white rounded-md cursor-pointer font-medium"
             disabled={loading}
           >
             {loading ? <Loading /> : "Sign In"}
           </button>
         </form>
       </div>
-      <div className="Separator h-4/5 w-[2px] bg-[#dddddd35]"></div>
+      <div className="Separator md:h-4/5 md:w-[2px] bg-[#dddddd35]"></div>
       <div className="item flex-1 flex flex-col items-center gap-5">
-        <div className="text-xl ">Create an account</div>
+        <div className="text-xl mt-3 md:mt-0">Create an account</div>
         <form
           onSubmit={handleSignup}
-          className="flex flex-col items-center justify-center gap-5"
+          className="flex flex-col items-center justify-center gap-2 md:gap-5"
         >
           <input
             type="text"
             placeholder="Username"
             name="username"
-            className="p-5 bg-black text-white rounded-md"
+            className="p-2 md:p-5 bg-black text-white rounded-md"
           />
           <input
             type="text"
             placeholder="Email"
             name="email"
-            className="p-5 bg-black text-white rounded-md"
+            className="p-2 md:p-5 bg-black text-white rounded-md"
           />
           <input
             type="password"
             placeholder="Password"
             name="password"
-            className="p-5 bg-black text-white rounded-md"
+            className="p-2 md:p-5 bg-black text-white rounded-md"
           />
 
           <button
-            className="w-full p-3 bg-blue-400 text-white rounded-md cursor-pointer font-medium"
+            className="p-1 w-full md:p-3 bg-blue-400 text-white rounded-md cursor-pointer font-medium"
             disabled={loading}
           >
             {loading ? <Loading /> : "Sign Up"}
