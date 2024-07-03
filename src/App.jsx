@@ -10,7 +10,6 @@ function App() {
   const currentUser = useAuth();
   const [currentUserId, setCurrentUserId] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
-  const [otherUsersId, setOtherUsersId] = useState(null);
 
   useEffect(() => {
     currentUser ? setCurrentUserId(currentUser.uid) : setCurrentUserId(null);

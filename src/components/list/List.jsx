@@ -30,6 +30,7 @@ const List = ({ currentUserId, onSelectUser }) => {
             .filter((id) => id !== currentUserId)
             .map((id) => ({ id, ...data[id] }))
         : [];
+      console.log("users array-", usersArray);
       setUsers(usersArray);
     });
   }, [currentUserId]);

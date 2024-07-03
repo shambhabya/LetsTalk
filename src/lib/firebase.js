@@ -10,7 +10,7 @@ import {
   update,
   onDisconnect,
 } from "firebase/database";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -30,31 +30,4 @@ const app = initializeApp(firebaseConfig);
 export const database = getDatabase(app);
 export const firebaseAuth = getAuth(app);
 
-const googleProvider = new GoogleAuthProvider();
-
-const signUpWithGoogle = () => {
-  signInWithPopup(firebaseAuth, googleProvider).then((value) => {
-    console.log(value);
-
-    let { user } = value;
-    console.log(user);
-    const username = user.displayName;
-
-    set(ref(database, "users/" + user.uid), {
-      username,
-      online: true,
-    });
-  });
-};
-
-export {
-  ref,
-  set,
-  onValue,
-  push,
-  get,
-  child,
-  update,
-  onDisconnect,
-  signUpWithGoogle,
-};
+export { ref, set, onValue, push, get, child, update, onDisconnect };

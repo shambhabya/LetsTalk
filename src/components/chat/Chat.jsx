@@ -57,6 +57,7 @@ const Chat = ({ currentUserId, otherUserId }) => {
     get(child(ref(database), `users/${otherUserId}`))
       .then((snapshot) => {
         if (snapshot.exists()) {
+          console.log("other", snapshot.val());
           setOtherUser(snapshot.val());
         } else {
           console.log("No data available");
@@ -78,6 +79,7 @@ const Chat = ({ currentUserId, otherUserId }) => {
     onValue(ref(database, `chats/${chatId}/`), (snapshot) => {
       const data = snapshot.val();
       data.lastSeen && setLastSeen(data.lastSeen);
+      console.log(data, lastSeen);
     });
   }, [currentUserId, otherUserId]);
 
@@ -89,6 +91,7 @@ const Chat = ({ currentUserId, otherUserId }) => {
         sender: currentUserId,
         content: newMessage,
         timestamp: Date.now(),
+        status: "sent",
       };
 
       // set(ref(database, `chats/${chatId}/messages`), message);
@@ -131,7 +134,8 @@ const Chat = ({ currentUserId, otherUserId }) => {
                 <span>{mainUser && mainUser.username}</span>
               ) : (
                 <span>{otherUser && otherUser.username}</span>
-              )}
+              )}{" "}
+              de
             </div>
             <div className="texts flex-1 flex flex-col gap-2">
               <p className="p-3 bg-white rounded-lg">{message.content}</p>
@@ -143,7 +147,9 @@ const Chat = ({ currentUserId, otherUserId }) => {
           messages[messages.length - 1].sender === currentUserId && (
             <span className=" flex justify-end">
               {lastSeen === "sent" && <span>✓</span>}
-              {lastSeen === "delivered" && <span className="">✓✓</span>}
+              {lastSeen === "delivered" && (
+                <span className="text-blue-400">✓✓</span>
+              )}
               {lastSeen === "read" && <span className="text-blue-400">✓✓</span>}
             </span>
           )}

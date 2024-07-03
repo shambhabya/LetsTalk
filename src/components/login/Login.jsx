@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import {
-  database,
-  firebaseAuth,
-  ref,
-  set,
-  signUpWithGoogle,
-} from "../../lib/firebase";
+import { database, firebaseAuth, ref, set } from "../../lib/firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -88,12 +82,6 @@ const Login = () => {
             {loading ? <Loading /> : "Sign In"}
           </button>
         </form>
-        <button
-          className="bg-red-300 p-3 rounded-md"
-          onClick={signUpWithGoogle}
-        >
-          Sign In with Google
-        </button>
       </div>
       <div className="Separator h-4/5 w-[2px] bg-[#dddddd35]"></div>
       <div className="item flex-1 flex flex-col items-center gap-5">
