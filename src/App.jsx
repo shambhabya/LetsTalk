@@ -14,7 +14,7 @@ function App() {
   useEffect(() => {
     currentUser ? setCurrentUserId(currentUser.uid) : setCurrentUserId(null);
     console.log("current user-", currentUser);
-  }, [currentUserId]);
+  }, [currentUser]);
   return (
     <div className=" h-screen flex flex-col gap-8 items-center bg-[black] p-6">
       <div className="text-white text-4xl font-extrabold ">MyChat App</div>
