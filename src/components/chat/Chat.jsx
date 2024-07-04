@@ -83,7 +83,6 @@ const Chat = ({ currentUserId, otherUserId }) => {
     onValue(ref(database, `chats/${chatId}/`), (snapshot) => {
       const data = snapshot.val();
       data.lastSeen && setLastSeen(data.lastSeen);
-      console.log(data, lastSeen);
     });
     return () => unsubscribe();
   }, [currentUserId, otherUserId]);
@@ -96,7 +95,6 @@ const Chat = ({ currentUserId, otherUserId }) => {
         sender: currentUserId,
         content: newMessage,
         timestamp: Date.now(),
-        status: "sent",
       };
 
       // set(ref(database, `chats/${chatId}/messages`), message);

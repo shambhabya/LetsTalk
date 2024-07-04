@@ -39,6 +39,14 @@ const List = ({ currentUserId, onSelectUser }) => {
       console.log("users array-", usersArray);
       setUsers(usersArray);
     });
+
+    // const chatId = [currentUserId, otherUserId].sort().join("_");
+
+    users.map((user)=>{
+      const chatId = [currentUserId, user.id].sort().join("_");
+      
+    })
+
   }, [currentUserId]);
 
   return (
