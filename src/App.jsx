@@ -13,7 +13,7 @@ function App() {
 
   useEffect(() => {
     currentUser ? setCurrentUserId(currentUser.uid) : setCurrentUserId(null);
-    console.log("current user-", currentUser);
+    console.log("current userid-", currentUserId);
   }, [currentUser]);
   return (
     <div className=" h-screen flex flex-col gap-8 items-center bg-[black] p-6">
@@ -24,6 +24,7 @@ function App() {
             <List
               currentUserId={currentUserId}
               onSelectUser={setSelectedUserId}
+              setCurrentUserId={setCurrentUserId}
             />
             <div className="flex-[2]">
               {selectedUserId && (

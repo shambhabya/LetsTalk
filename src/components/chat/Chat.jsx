@@ -43,6 +43,7 @@ const Chat = ({ currentUserId, otherUserId }) => {
   const chatId = [currentUserId, otherUserId].sort().join("_");
 
   useEffect(() => {
+    console.log("messs-", messages);
     get(child(ref(database), `users/${currentUserId}`))
       .then((snapshot) => {
         if (snapshot.exists()) {
@@ -76,7 +77,6 @@ const Chat = ({ currentUserId, otherUserId }) => {
           : [];
 
         setMessages(messagesArray);
-        update(ref(database, `chats/${chatId}/`), { lastSeen: "read" });
       }
     );
 
@@ -86,6 +86,18 @@ const Chat = ({ currentUserId, otherUserId }) => {
     });
     return () => unsubscribe();
   }, [currentUserId, otherUserId]);
+
+  useEffect(() => {
+    currentUserId &&
+      messages.length > 0 &&
+      console.log("ss", currentUserId, messages[messages.length - 1].sender);
+
+    currentUserId &&
+      otherUserId &&
+      messages.length > 0 &&
+      messages[messages.length - 1]["sender"] !== currentUserId &&
+      update(ref(database, `chats/${chatId}/`), { lastSeen: "read" });
+  }, [messages]);
 
   const handleSendMessage = () => {
     if (newMessage.trim() !== "") {
@@ -150,9 +162,7 @@ const Chat = ({ currentUserId, otherUserId }) => {
           messages[messages.length - 1].sender === currentUserId && (
             <span className=" flex justify-end">
               {lastSeen === "sent" && <span>✓</span>}
-              {lastSeen === "delivered" && (
-                <span className="text-blue-400">✓✓</span>
-              )}
+              {lastSeen === "delivered" && <span className="">✓✓</span>}
               {lastSeen === "read" && <span className="text-blue-400">✓✓</span>}
             </span>
           )}

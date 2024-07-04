@@ -1,14 +1,16 @@
 import { signOut } from "firebase/auth";
 import {
+  child,
   database,
   firebaseAuth,
+  get,
   onValue,
   ref,
   update,
 } from "../../lib/firebase";
 import { useEffect, useState } from "react";
 
-const List = ({ currentUserId, onSelectUser }) => {
+const List = ({ currentUserId, onSelectUser, setCurrentUserId }) => {
   const [users, setUsers] = useState([]);
   const [currentUserName, setCurrentUserName] = useState("");
 
@@ -16,6 +18,7 @@ const List = ({ currentUserId, onSelectUser }) => {
     update(ref(database, "users/" + currentUserId), {
       online: false,
     });
+    setCurrentUserId(null);
     signOut(firebaseAuth).then(() => {
       console.log("SignOut successful");
     });
@@ -39,14 +42,6 @@ const List = ({ currentUserId, onSelectUser }) => {
       console.log("users array-", usersArray);
       setUsers(usersArray);
     });
-
-    // const chatId = [currentUserId, otherUserId].sort().join("_");
-
-    users.map((user)=>{
-      const chatId = [currentUserId, user.id].sort().join("_");
-      
-    })
-
   }, [currentUserId]);
 
   return (
