@@ -1,11 +1,14 @@
 import React from "react";
+import "./loading.css";
 
 const Loading = () => {
   return (
-    <div className="flex justify-center items-center">
-      <div className="h-3 w-3 bg-current rounded-full animate-bounce mr-1"></div>
-      <div className="h-3 w-3 bg-current rounded-full animate-bounce200 mr-1"></div>
-      <div className="h-3 w-3 bg-current rounded-full animate-bounce400"></div>
+    <div className="">
+      <div className="bouncing-loader">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </div>
   );
 };
