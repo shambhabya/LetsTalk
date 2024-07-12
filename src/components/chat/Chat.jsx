@@ -35,7 +35,7 @@ const formatTimestamp = (timestamp) => {
 
 const Chat = ({ currentUserId, otherUserId }) => {
   const [messages, setMessages] = useState([]);
-  const [lastSeen, setLastSeen] = useState("");
+  const [lastSeen, setLastSeen] = useState("sent");
   const [newMessage, setNewMessage] = useState("");
   const [mainUser, setMainUser] = useState(null);
   const [otherUser, setOtherUser] = useState(null);

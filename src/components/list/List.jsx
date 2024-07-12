@@ -52,23 +52,28 @@ const List = ({ currentUserId, onSelectUser, setCurrentUserId }) => {
       currentUserId &&
         users.map((user) => {
           let chatId = [currentUserId, user.id].sort().join("_");
-          let lastSeen = chats[chatId].lastSeen;
-          console.log("lastseen-", lastSeen);
+          console.log("chatId-", chatId);
+          if (chats[chatId]) {
+            let lastSeen = chats[chatId].lastSeen;
+            console.log("lastseen-", lastSeen);
 
-          get(child(ref(database), `chats/${chatId}/messages`)).then((snap) => {
-            console.log("my message", snap.val());
-            let values = Object.values(snap.val());
-            console.log("values-", values);
-            if (
-              values &&
-              values[values.length - 1]["sender"] !== currentUserId &&
-              lastSeen === "sent"
-            ) {
-              update(ref(database, `chats/${chatId}/`), {
-                lastSeen: "delivered",
-              });
-            }
-          });
+            get(child(ref(database), `chats/${chatId}/messages`)).then(
+              (snap) => {
+                console.log("my message", snap.val());
+                let values = Object.values(snap.val());
+                console.log("values-", values);
+                if (
+                  values &&
+                  values[values.length - 1]["sender"] !== currentUserId &&
+                  lastSeen === "sent"
+                ) {
+                  update(ref(database, `chats/${chatId}/`), {
+                    lastSeen: "delivered",
+                  });
+                }
+              }
+            );
+          }
         });
     });
     return () => unsubscribe();
